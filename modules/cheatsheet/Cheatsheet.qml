@@ -155,8 +155,12 @@ Scope { // Scope
                         Layout.topMargin: 5
                         Layout.fillWidth: true
                         Layout.fillHeight: true
+                        Layout.preferredWidth: cheatsheetRoot.screen.width * 0.8
+                        Layout.preferredHeight: cheatsheetRoot.screen.height * 0.65
                         Layout.maximumWidth: cheatsheetRoot.screen.width * 0.85
                         Layout.maximumHeight: cheatsheetRoot.screen.height * 0.7
+                        Layout.minimumWidth: 600
+                        Layout.minimumHeight: 400
                         spacing: 10
 
                         Behavior on implicitWidth {
@@ -188,8 +192,14 @@ Scope { // Scope
                             }
                         }
 
-                        CheatsheetKeybinds {}
-                        CheatsheetPeriodicTable {}
+                        CheatsheetKeybinds {
+                            width: swipeView.width
+                            height: swipeView.height
+                        }
+                        CheatsheetPeriodicTable {
+                            width: swipeView.width
+                            height: swipeView.height
+                        }
                     }
                 }
             }

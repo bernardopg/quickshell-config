@@ -15,10 +15,6 @@ Item {
     property real padding: 10
     property real sectionMaxWidth: 420
 
-    // Let the container size adapt but not explode
-    implicitWidth: Math.min(content.implicitWidth + padding * 2, 1600)
-    implicitHeight: Math.min(content.implicitHeight + padding * 2, 1200)
-
     property var keyBlacklist: ["Super_L"]
     property var keySubstitutions: ({
         "Super": "󰖳",
@@ -36,14 +32,15 @@ Item {
         id: scroller
         anchors.fill: parent
         clip: true
+        contentWidth: availableWidth
         ScrollBar.vertical.policy: ScrollBar.AsNeeded
         ScrollBar.horizontal.policy: ScrollBar.AsNeeded
 
         Column {
             id: content
-            width: scroller.width
+            width: scroller.availableWidth
             spacing: 10
-            
+
             // Search/filter
             Frame {
                 padding: 6
@@ -65,12 +62,26 @@ Item {
             // Sections in a responsive flow
             Flow {
                 id: sectionFlow
-                width: content.width - padding * 2
+                width: content.width - root.padding * 2
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: root.spacing
 
                 Repeater {
-                    model: keybinds.children
+                    model: {
+                        // Flatten all sections and subsections
+                        const allSections = [];
+                        for (let i = 0; i < keybinds.children.length; i++) {
+                            const category = keybinds.children[i];
+                            if (category.children && category.children.length > 0) {
+                                for (let j = 0; j < category.children.length; j++) {
+                                    allSections.push(category.children[j]);
+                                }
+                            } else if (category.keybinds && category.keybinds.length > 0) {
+                                allSections.push(category);
+                            }
+                        }
+                        return allSections;
+                    }
 
                     delegate: Item { // Section card wrapper
                         required property var modelData
@@ -95,11 +106,12 @@ Item {
                         Rectangle { // Card
                             id: card
                             width: parent.width
+                            implicitHeight: sectionColumn.implicitHeight + sectionColumn.anchors.margins * 2
                             radius: 10
                             color: Appearance.colors.colLayer0
                             border.width: 1
                             border.color: Appearance.colors.colLayer0Border
-                            
+
                             Column {
                                 id: sectionColumn
                                 anchors.margins: 10
@@ -181,7 +193,7 @@ Item {
                                                     id: commentItem
                                                     implicitWidth: commentText.implicitWidth + 8 * 2
                                                     implicitHeight: commentText.implicitHeight
-                                                    
+
                                                     StyledText {
                                                         id: commentText
                                                         anchors.centerIn: parent
