@@ -75,21 +75,25 @@ Scope {
     Process {
         id: fingerprintCheckProc
         running: true
-        command: ["bash", "-c", "fprintd-list $(whoami)"]
+        command: ["bash", "-c", "command -v fprintd-list > /dev/null 2>&1 && fprintd-list $(whoami) || echo 'fprintd-list not found'"]
         stdout: StdioCollector {
             id: fingerprintOutputCollector
             onStreamFinished: {
-                root.fingerprintsConfigured = fingerprintOutputCollector.text.includes("Fingerprints for user");
+                if (fingerprintOutputCollector.text.includes("fprintd-list not found")) {
+                    root.fingerprintsConfigured = false;
+                } else {
+                    root.fingerprintsConfigured = fingerprintOutputCollector.text.includes("Fingerprints for user");
+                }
             }
         }
         onExited: (exitCode, exitStatus) => {
-            if (exitCode !== 0) {
+            if (exitCode !== 0 && !fingerprintOutputCollector.text.includes("fprintd-list not found")) {
                 console.warn("fprintd-list command exited with error:", exitCode, exitStatus);
                 root.fingerprintsConfigured = false;
             }
         }
     }
-    
+
     PamContext {
         id: pam
 

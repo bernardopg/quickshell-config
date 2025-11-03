@@ -11,6 +11,7 @@ Singleton {
     property bool ready: false
     property int readWriteDelay: 50 // milliseconds
     property bool blockWrites: false
+    property bool initialLoad: true
 
     function setNestedValue(nestedKey, value) {
         let keys = nestedKey.split(".");
@@ -65,9 +66,20 @@ Singleton {
         path: root.filePath
         watchChanges: true
         blockWrites: root.blockWrites
-        onFileChanged: fileReloadTimer.restart()
-        onAdapterUpdated: fileWriteTimer.restart()
-        onLoaded: root.ready = true
+        onFileChanged: {
+            if (!root.initialLoad) {
+                fileReloadTimer.restart()
+            }
+        }
+        onAdapterUpdated: {
+            if (!root.initialLoad) {
+                fileWriteTimer.restart()
+            }
+        }
+        onLoaded: {
+            root.ready = true
+            root.initialLoad = false
+        }
         onLoadFailed: error => {
             if (error == FileViewError.FileNotFound) {
                 writeAdapter();
@@ -169,7 +181,7 @@ Singleton {
                     property JsonObject digital: JsonObject {
                         property bool animateChange: true
                     }
-                    
+
                 }
                 property string wallpaperPath: ""
                 property string thumbnailPath: ""
@@ -479,11 +491,11 @@ Singleton {
                 }
                 property bool secondPrecision: false
             }
-            
+
             property JsonObject wallpaperSelector: JsonObject {
                 property bool useSystemFileDialog: false
             }
-            
+
             property JsonObject windows: JsonObject {
                 property bool showTitlebar: true // Client-side decoration for shell apps
                 property bool centerTitle: true
