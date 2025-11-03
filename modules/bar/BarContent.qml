@@ -80,19 +80,25 @@ Item { // Bar content region
         RowLayout {
             id: leftSectionRowLayout
             anchors.fill: parent
-            spacing: 10
+            spacing: root.useShortenedForm > 0 ? 6 : 10
 
-            LeftSidebarButton { // Left sidebar button
+            LeftSidebarButton { // Left sidebar button (AI)
                 Layout.alignment: Qt.AlignVCenter
                 Layout.leftMargin: Appearance.rounding.screenRounding
                 colBackground: barLeftSideMouseArea.hovered ? Appearance.colors.colLayer1Hover : ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
             }
 
-            ActiveWindow {
-                visible: root.useShortenedForm === 0
+            VerticalBarSeparator {
+                visible: Config.options?.bar.borderless
+            }
+
+            BarGroup {
+                Layout.alignment: Qt.AlignVCenter
                 Layout.rightMargin: Appearance.rounding.screenRounding
-                Layout.fillWidth: true
-                Layout.fillHeight: true
+
+                Media {
+                    Layout.fillWidth: true
+                }
             }
         }
     }
@@ -104,27 +110,7 @@ Item { // Bar content region
             bottom: parent.bottom
             horizontalCenter: parent.horizontalCenter
         }
-        spacing: 4
-
-        BarGroup {
-            id: leftCenterGroup
-            anchors.verticalCenter: parent.verticalCenter
-            implicitWidth: root.centerSideModuleWidth
-
-            Resources {
-                alwaysShowAllResources: root.useShortenedForm === 2
-                Layout.fillWidth: root.useShortenedForm === 2
-            }
-
-            Media {
-                visible: root.useShortenedForm < 2
-                Layout.fillWidth: true
-            }
-        }
-
-        VerticalBarSeparator {
-            visible: Config.options?.bar.borderless
-        }
+        spacing: root.useShortenedForm > 0 ? 2 : 4
 
         BarGroup {
             id: middleCenterGroup
@@ -144,42 +130,6 @@ Item { // Bar content region
                             GlobalStates.overviewOpen = !GlobalStates.overviewOpen;
                         }
                     }
-                }
-            }
-        }
-
-        VerticalBarSeparator {
-            visible: Config.options?.bar.borderless
-        }
-
-        MouseArea {
-            id: rightCenterGroup
-            anchors.verticalCenter: parent.verticalCenter
-            implicitWidth: root.centerSideModuleWidth
-            implicitHeight: rightCenterGroupContent.implicitHeight
-
-            onPressed: {
-                GlobalStates.sidebarRightOpen = !GlobalStates.sidebarRightOpen;
-            }
-
-            BarGroup {
-                id: rightCenterGroupContent
-                anchors.fill: parent
-
-                ClockWidget {
-                    showDate: (Config.options.bar.verbose && root.useShortenedForm < 2)
-                    Layout.alignment: Qt.AlignVCenter
-                    Layout.fillWidth: true
-                }
-
-                UtilButtons {
-                    visible: (Config.options.bar.verbose && root.useShortenedForm === 0)
-                    Layout.alignment: Qt.AlignVCenter
-                }
-
-                BatteryIndicator {
-                    visible: (root.useShortenedForm < 2 && UPower.displayDevice.isLaptopBattery)
-                    Layout.alignment: Qt.AlignVCenter
                 }
             }
         }
@@ -227,7 +177,7 @@ Item { // Bar content region
         RowLayout {
             id: rightSectionRowLayout
             anchors.fill: parent
-            spacing: 5
+            spacing: root.useShortenedForm > 0 ? 3 : 5
             layoutDirection: Qt.RightToLeft
 
             RippleButton { // Right sidebar button
@@ -261,7 +211,7 @@ Item { // Bar content region
                 RowLayout {
                     id: indicatorsRowLayout
                     anchors.centerIn: parent
-                    property real realSpacing: 15
+                    property real realSpacing: root.useShortenedForm === 2 ? 10 : root.useShortenedForm === 1 ? 12 : 15
                     spacing: 0
 
                     Revealer {
@@ -323,6 +273,48 @@ Item { // Bar content region
                 }
             }
 
+            // Battery
+            BarGroup {
+                visible: UPower.displayDevice.isLaptopBattery
+                Layout.alignment: Qt.AlignVCenter
+
+                BatteryIndicator {
+                    Layout.alignment: Qt.AlignHCenter
+                }
+            }
+
+            VerticalBarSeparator {
+                visible: Config.options?.bar.borderless && UPower.displayDevice.isLaptopBattery
+            }
+
+            // Weather
+            Loader {
+                active: Config.options.bar.weather.enable
+
+                sourceComponent: BarGroup {
+                    WeatherBar {}
+                }
+            }
+
+            VerticalBarSeparator {
+                visible: Config.options?.bar.borderless && Config.options.bar.weather.enable
+            }
+
+            // Clock with Date
+            BarGroup {
+                Layout.alignment: Qt.AlignVCenter
+
+                ClockWidget {
+                    showDate: true
+                    Layout.alignment: Qt.AlignVCenter
+                    Layout.fillWidth: true
+                }
+            }
+
+            VerticalBarSeparator {
+                visible: Config.options?.bar.borderless
+            }
+
             SysTray {
                 visible: root.useShortenedForm === 0
                 Layout.fillWidth: false
@@ -333,16 +325,6 @@ Item { // Bar content region
             Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-            }
-
-            // Weather
-            Loader {
-                Layout.leftMargin: 4
-                active: Config.options.bar.weather.enable
-
-                sourceComponent: BarGroup {
-                    WeatherBar {}
-                }
             }
         }
     }

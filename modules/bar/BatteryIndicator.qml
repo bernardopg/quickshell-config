@@ -34,14 +34,45 @@ MouseArea {
                 spacing: 0
 
                 MaterialSymbol {
-                    id: boltIcon
+                    id: statusIcon
                     Layout.alignment: Qt.AlignVCenter
                     Layout.leftMargin: -2
                     Layout.rightMargin: -2
                     fill: 1
-                    text: "bolt"
                     iconSize: Appearance.font.pixelSize.smaller
-                    visible: isCharging && percentage < 1 // TODO: animation
+                    visible: isLow || isPluggedIn
+
+                    text: {
+                        if (isLow && !isCharging) {
+                            return "battery_alert"
+                        } else if (isCharging) {
+                            return "bolt"
+                        } else if (isPluggedIn) {
+                            return "power"
+                        }
+                        return ""
+                    }
+
+                    color: (isLow && !isCharging) ? Appearance.m3colors.m3error : batteryProgress.highlightColor
+
+                    SequentialAnimation on opacity {
+                        running: statusIcon.visible && isCharging
+                        loops: Animation.Infinite
+
+                        NumberAnimation {
+                            from: 1.0
+                            to: 0.3
+                            duration: 800
+                            easing.type: Easing.InOutQuad
+                        }
+
+                        NumberAnimation {
+                            from: 0.3
+                            to: 1.0
+                            duration: 800
+                            easing.type: Easing.InOutQuad
+                        }
+                    }
                 }
                 StyledText {
                     Layout.alignment: Qt.AlignVCenter
