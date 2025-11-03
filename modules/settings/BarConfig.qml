@@ -19,7 +19,7 @@ ContentPage {
             }
         }
     }
-    
+
     ContentSection {
         icon: "spoke"
         title: Translation.tr("Positioning")
@@ -85,7 +85,7 @@ ContentPage {
         }
 
         ConfigRow {
-            
+
             ContentSubsection {
                 title: Translation.tr("Corner style")
                 Layout.fillWidth: true
@@ -153,7 +153,7 @@ ContentPage {
                 Config.options.bar.tray.invertPinnedItems = checked;
             }
         }
-        
+
         ConfigSwitch {
             buttonIcon: "colors"
             text: Translation.tr('Tint icons')
@@ -247,6 +247,22 @@ ContentPage {
             checked: Config.options.bar.weather.enable
             onCheckedChanged: {
                 Config.options.bar.weather.enable = checked;
+            }
+        }
+    }
+
+    ContentSection {
+        icon: "code"
+        title: Translation.tr("Git Commits")
+        ConfigSwitch {
+            buttonIcon: "check"
+            text: Translation.tr("Enable")
+            checked: Config.options.bar.gitCommits?.enable ?? false
+            onCheckedChanged: {
+                if (!Config.options.bar.gitCommits) {
+                    Config.options.bar.gitCommits = {};
+                }
+                Config.options.bar.gitCommits.enable = checked;
             }
         }
     }

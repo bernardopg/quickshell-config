@@ -300,6 +300,19 @@ Item { // Bar content region
                 visible: Config.options?.bar.borderless && Config.options.bar.weather.enable
             }
 
+            // Git Commits Widget
+            Loader {
+                active: Config.options.bar.gitCommits?.enable ?? false
+
+                sourceComponent: BarGroup {
+                    GitCommits {}
+                }
+            }
+
+            VerticalBarSeparator {
+                visible: Config.options?.bar.borderless && (Config.options.bar.gitCommits?.enable ?? false)
+            }
+
             // Clock with Date
             BarGroup {
                 Layout.alignment: Qt.AlignVCenter
