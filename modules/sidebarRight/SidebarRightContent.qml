@@ -20,7 +20,8 @@ import qs.modules.sidebarRight.wifiNetworks
 Item {
     id: root
     property int sidebarWidth: Appearance.sizes.sidebarWidth
-    property int sidebarPadding: 10
+    property int sidebarPadding: (screen?.width <= 1440) ? 6 : 10
+    property var screen: root.QsWindow.window?.screen
     property string settingsQmlPath: Quickshell.shellPath("settings.qml")
     property bool showAudioOutputDialog: false
     property bool showAudioInputDialog: false
@@ -61,13 +62,13 @@ Item {
         ColumnLayout {
             anchors.fill: parent
             anchors.margins: sidebarPadding
-            spacing: sidebarPadding
+            spacing: (screen?.width <= 1440) ? 6 : sidebarPadding
 
             SystemButtonRow {
                 Layout.fillHeight: false
                 Layout.fillWidth: true
                 // Layout.margins: 10
-                Layout.topMargin: 5
+                Layout.topMargin: (screen?.width <= 1440) ? 3 : 5
                 Layout.bottomMargin: 0
             }
 
@@ -219,18 +220,18 @@ Item {
             }
             color: Appearance.colors.colLayer1
             radius: height / 2
-            implicitWidth: uptimeRow.implicitWidth + 24
-            implicitHeight: uptimeRow.implicitHeight + 8
-            
+            implicitWidth: uptimeRow.implicitWidth + ((screen?.width <= 1440) ? 16 : 24)
+            implicitHeight: uptimeRow.implicitHeight + ((screen?.width <= 1440) ? 6 : 8)
+
             Row {
                 id: uptimeRow
                 anchors.centerIn: parent
-                spacing: 8
+                spacing: (screen?.width <= 1440) ? 6 : 8
                 CustomIcon {
                     id: distroIcon
                     anchors.verticalCenter: parent.verticalCenter
-                    width: 25
-                    height: 25
+                    width: (screen?.width <= 1440) ? 22 : 25
+                    height: (screen?.width <= 1440) ? 22 : 25
                     source: SystemInfo.distroIcon
                     colorize: true
                     color: Appearance.colors.colOnLayer0
