@@ -25,26 +25,21 @@ Item {
             let cmd = "cd ~/.config/quickshell/ii && ";
             for (let i = 0; i < root.daysToShow; i++) {
                 if (i > 0) cmd += " && ";
-                cmd += `git log --since='${i} days ago' --until='${i-1} days ago' --oneline | wc -l`;
+                if (i === 0) {
+                    cmd += `git log --since='0 days ago' --oneline | wc -l`;
+                } else {
+                    cmd += `git log --since='${i} days ago' --until='${i-1} days ago' --oneline | wc -l`;
+                }
             }
             return cmd;
         }
 
-        onExited: (exitCode, exitStatus) => {
-            if (exitCode === 0) {
-                parseCommitData();
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const lines = this.text.trim().split('\n');
+                root.commitCounts = lines.map(line => parseInt(line.trim()) || 0);
+                root.maxCommits = Math.max(...root.commitCounts, 1);
             }
-        }
-
-        onReadyReadStandardOutput: () => {
-            const output = gitProcess.readStandardOutput();
-            const lines = output.trim().split('\n');
-            root.commitCounts = lines.map(line => parseInt(line.trim()) || 0);
-            root.maxCommits = Math.max(...root.commitCounts, 1);
-        }
-
-        function parseCommitData() {
-            // Data is already parsed in onReadyReadStandardOutput
         }
     }
 
@@ -53,7 +48,10 @@ Item {
         interval: 300000 // 5 minutes
         running: true
         repeat: true
-        onTriggered: gitProcess.running = false; gitProcess.running = true;
+        onTriggered: {
+            gitProcess.running = false;
+            gitProcess.running = true;
+        }
     }
 
     MouseArea {

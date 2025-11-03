@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(killall qs:*)",
+      "Bash(qs:*)",
+      "Bash(quickshell:*)",
+      "Bash(grim:*)",
+      "Bash(journalctl:*)",
+      "Bash(cat:*)",
+      "Bash(pkill:*)",
+      "Bash(for i in {0..4})",
+      "Bash(do if [ $i -eq 0 ])",
+      "Bash(then git log --since='0 days ago' --oneline)",
+      "Bash(fi)",
+      "Bash(done)",
+      "Bash(bash -c \"git log --since=''0 days ago'' --oneline | wc -l\")",
+      "Bash(bash -c \"cd ~/.config/quickshell/ii && git log --since=''0 days ago'' --oneline | wc -l\")",
+      "Bash(bash -c \"cd ~/.config/quickshell/ii && git log --oneline -5\":*)",
+      "Bash(bash -c \"cd ~/.config/quickshell/ii && git log --oneline --since=''1 day ago''\")",
+      "Bash(bash -c \"cd ~/.config/quickshell/ii && git log -1 --format=''%ar | %ad'' --date=short\")",
+      "Bash(ls:*)",
+      "Bash(qmlformat:*)",
+      "Bash(hyprctl monitors:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
