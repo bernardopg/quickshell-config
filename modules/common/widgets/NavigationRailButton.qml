@@ -16,12 +16,12 @@ TabButton {
     property bool showToggledHighlight: true
     readonly property real visualWidth: root.expanded ? root.baseSize + 20 + itemText.implicitWidth : root.baseSize
 
-    property real baseSize: 56
-    property real baseHighlightHeight: 32
-    property real highlightCollapsedTopMargin: 8
+    property real baseSize: 44
+    property real baseHighlightHeight: 28
+    property real highlightCollapsedTopMargin: 6
     padding: 0
 
-    // The navigation item’s target area always spans the full width of the
+    // The navigation item's target area always spans the full width of the
     // nav rail, even if the item container hugs its contents.
     Layout.fillWidth: true
     // implicitWidth: contentItem.implicitWidth
@@ -102,7 +102,7 @@ TabButton {
                 id: navRailButtonIcon
                 rotation: root.buttonIconRotation
                 anchors.centerIn: parent
-                iconSize: 24
+                iconSize: 22
                 fill: toggled ? 1 : 0
                 font.weight: (toggled || root.hovered) ? Font.DemiBold : Font.Normal
                 text: buttonIcon
@@ -142,7 +142,7 @@ TabButton {
                 }
             }
             text: buttonText
-            font.pixelSize: 14
+            font.pixelSize: 12
             color: Appearance.colors.colOnLayer1
         }
     }

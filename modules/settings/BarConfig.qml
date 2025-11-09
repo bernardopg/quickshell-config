@@ -19,7 +19,7 @@ ContentPage {
             }
         }
     }
-
+    
     ContentSection {
         icon: "spoke"
         title: Translation.tr("Positioning")
@@ -85,7 +85,7 @@ ContentPage {
         }
 
         ConfigRow {
-
+            
             ContentSubsection {
                 title: Translation.tr("Corner style")
                 Layout.fillWidth: true
@@ -153,7 +153,7 @@ ContentPage {
                 Config.options.bar.tray.invertPinnedItems = checked;
             }
         }
-
+        
         ConfigSwitch {
             buttonIcon: "colors"
             text: Translation.tr('Tint icons')
@@ -252,22 +252,6 @@ ContentPage {
     }
 
     ContentSection {
-        icon: "code"
-        title: Translation.tr("Git Commits")
-        ConfigSwitch {
-            buttonIcon: "check"
-            text: Translation.tr("Enable")
-            checked: Config.options.bar.gitCommits?.enable ?? false
-            onCheckedChanged: {
-                if (!Config.options.bar.gitCommits) {
-                    Config.options.bar.gitCommits = {};
-                }
-                Config.options.bar.gitCommits.enable = checked;
-            }
-        }
-    }
-
-    ContentSection {
         icon: "workspaces"
         title: Translation.tr("Workspaces")
 
@@ -334,17 +318,17 @@ ContentPage {
                     {
                         displayName: Translation.tr("Normal"),
                         icon: "timer_10",
-                        value: '["1","2","3","4","5","6","7","8","9","10"]'
+                        value: '[]'
                     },
                     {
-                        displayName: Translation.tr("Japanese"),
+                        displayName: Translation.tr("Han chars"),
                         icon: "square_dot",
-                        value: '["一","二","三","四","五","六","七","八","九","十"]'
+                        value: '["一","二","三","四","五","六","七","八","九","十","十一","十二","十三","十四","十五","十六","十七","十八","十九","二十"]'
                     },
                     {
                         displayName: Translation.tr("Roman"),
                         icon: "account_balance",
-                        value: '["I","II","III","IV","V","VI","VII","VIII","IX","X"]'
+                        value: '["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX"]'
                     }
                 ]
             }

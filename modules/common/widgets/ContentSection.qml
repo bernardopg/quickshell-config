@@ -11,17 +11,17 @@ ColumnLayout {
     default property alias data: sectionContent.data
 
     Layout.fillWidth: true
-    spacing: 6
+    spacing: 8
 
     RowLayout {
-        spacing: 6
+        spacing: 8
         OptionalMaterialSymbol {
             icon: root.icon
-            iconSize: Appearance.font.pixelSize.hugeass
+            iconSize: Appearance.font.pixelSize.huge
         }
         StyledText {
             text: root.title
-            font.pixelSize: Appearance.font.pixelSize.larger
+            font.pixelSize: Appearance.font.pixelSize.large
             font.weight: Font.Medium
             color: Appearance.colors.colOnSecondaryContainer
         }
@@ -30,7 +30,7 @@ ColumnLayout {
     ColumnLayout {
         id: sectionContent
         Layout.fillWidth: true
-        spacing: 4
+        spacing: 6
 
     }
 }

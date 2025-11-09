@@ -31,7 +31,6 @@ ApplicationWindow {
         {
             name: Translation.tr("General"),
             icon: "browse",
-            iconRotation: 180,
             component: "modules/settings/GeneralConfig.qml"
         },
         {
@@ -39,6 +38,11 @@ ApplicationWindow {
             icon: "toast",
             iconRotation: 180,
             component: "modules/settings/BarConfig.qml"
+        },
+        {
+            name: Translation.tr("Background"),
+            icon: "texture",
+            component: "modules/settings/BackgroundConfig.qml"
         },
         {
             name: Translation.tr("Interface"),
@@ -72,10 +76,10 @@ ApplicationWindow {
         Config.readWriteDelay = 0 // Settings app always only sets one var at a time so delay isn't needed
     }
 
-    minimumWidth: 750
-    minimumHeight: 500
-    width: 1100
-    height: 750
+    minimumWidth: 600
+    minimumHeight: 400
+    width: Math.min(950, Screen.width * 0.8)
+    height: Math.min(650, Screen.height * 0.8)
     color: Appearance.m3colors.m3background
 
     ColumnLayout {
@@ -153,7 +157,7 @@ ApplicationWindow {
                 id: navRailWrapper
                 Layout.fillHeight: true
                 Layout.margins: 5
-                implicitWidth: navRail.expanded ? 150 : fab.baseSize
+                implicitWidth: navRail.expanded ? 115 : fab.baseSize
                 Behavior on implicitWidth {
                     animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
                 }
@@ -164,8 +168,8 @@ ApplicationWindow {
                         top: parent.top
                         bottom: parent.bottom
                     }
-                    spacing: 10
-                    expanded: root.width > 900
+                    spacing: 4
+                    expanded: root.width > 750
                     
                     NavigationRailExpandButton {
                         focus: root.visible
@@ -177,6 +181,7 @@ ApplicationWindow {
                         iconText: justCopied ? "check" : "edit"
                         buttonText: justCopied ? Translation.tr("Path copied") : Translation.tr("Config file")
                         expanded: navRail.expanded
+                        maxWidth: navRail.expanded ? 115 : 0
                         downAction: () => {
                             Qt.openUrlExternally(`${Directories.config}/illogical-impulse/config.json`);
                         }
@@ -228,10 +233,12 @@ ApplicationWindow {
                 Layout.fillHeight: true
                 color: Appearance.m3colors.m3surfaceContainerLow
                 radius: Appearance.rounding.windowRounding - root.contentPadding
+                clip: true
 
                 Loader {
                     id: pageLoader
                     anchors.fill: parent
+                    anchors.margins: 5
                     opacity: 1.0
 
                     active: Config.ready

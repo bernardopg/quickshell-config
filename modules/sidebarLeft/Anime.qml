@@ -12,6 +12,8 @@ import Quickshell
 
 Item {
     id: root
+    property real padding: 4
+
     property var inputField: tagInputField
     readonly property var responses: Booru.responses
     property string previewDownloadPath: Directories.booruPreviews
@@ -141,7 +143,11 @@ Item {
 
     ColumnLayout {
         id: columnLayout
-        anchors.fill: parent
+        anchors {
+            fill: parent
+            margins: root.padding
+        }
+        spacing: root.padding
 
         Item {
             Layout.fillWidth: true
@@ -317,14 +323,12 @@ Item {
             id: tagInputContainer
             property real columnSpacing: 5
             Layout.fillWidth: true
-            radius: Appearance.rounding.small
-            color: Appearance.colors.colLayer1
+            radius: Appearance.rounding.normal - root.padding
+            color: Appearance.colors.colLayer2
             implicitWidth: tagInputField.implicitWidth
             implicitHeight: Math.max(inputFieldRowLayout.implicitHeight + inputFieldRowLayout.anchors.topMargin 
                 + commandButtonsRow.implicitHeight + commandButtonsRow.anchors.bottomMargin + columnSpacing, 45)
             clip: true
-            border.color: Appearance.colors.colOutlineVariant
-            border.width: 1
 
             Behavior on implicitHeight {
                 animation: Appearance.animation.elementMove.numberAnimation.createObject(this)
@@ -345,7 +349,7 @@ Item {
                     padding: 10
                     color: activeFocus ? Appearance.m3colors.m3onSurface : Appearance.m3colors.m3onSurfaceVariant
                     renderType: Text.NativeRendering
-                    placeholderText: Translation.tr('Enter tags, or "%1" for commands').arg(root.commandPrefix)
+                    placeholderText: Translation.tr('Enter tags, or "%1" for commands').arg(root?.commandPrefix ?? "/")
 
                     background: null
 
@@ -456,10 +460,9 @@ Item {
                     contentItem: MaterialSymbol {
                         anchors.centerIn: parent
                         horizontalAlignment: Text.AlignHCenter
-                        iconSize: Appearance.font.pixelSize.larger
-                        // fill: sendButton.enabled ? 1 : 0
+                        iconSize: 22
                         color: sendButton.enabled ? Appearance.m3colors.m3onPrimary : Appearance.colors.colOnLayer2Disabled
-                        text: "send"
+                        text: "arrow_upward"
                     }
                 }
             }
@@ -490,7 +493,7 @@ Item {
                     text: Booru.providers[Booru.currentProvider].name
                     tooltipText: Translation.tr("Current API endpoint: %1\nSet it with %2mode PROVIDER")
                         .arg(Booru.providers[Booru.currentProvider].url)
-                        .arg(root.commandPrefix)
+                        .arg(root?.commandPrefix ?? "/")
                 }
 
                 StyledText {
