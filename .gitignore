@@ -1,0 +1,175 @@
+# User Configuration & Runtime State
+# These files contain user-specific settings and should not be tracked
+~/.config/illogical-impulse/config.json
+~/.local/state/quickshell/states.json
+
+# Translation Backups
+# Auto-generated backup files from translation tools
+translations/*.bak
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+venv/
+ENV/
+env/
+
+# Qt/QML
+*.qmlc
+*.jsc
+.qmake.stash
+*.pro.user
+*.pro.user.*
+qrc_*.cpp
+moc_*.cpp
+ui_*.h
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.project
+.settings/
+.classpath
+*.kate-swp
+
+# Logs
+*.log
+*.qslog
+log.txt
+debug.log
+
+# Temporary Files
+*.tmp
+*.temp
+*.cache
+.cache/
+*.bak
+*~
+.*.swp
+
+# System Files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Environment Variables
+.env.local
+.env.*.local
+
+# Generated Files
+*.autosave
+*.orig
+
+# Compiled QML
+*.qmlc
+*.jsc
+
+# Node.js (if any tools use it)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Backup files from text editors
+*~
+*.swp
+*.swo
+\#*\#
+.#*
+
+# Personal notes (optional)
+NOTES.md
+PERSONAL.md
+SCRATCH.md
+
+# Test artifacts
+test-results/
+coverage/
+.coverage
+
+# Thumbnails
+.thumbnails/
+thumbnails/
+
+# Cliphist database (if stored locally)
+cliphist.db
+
+# AI model caches (if downloaded locally)
+models/
+*.gguf
+*.bin
+
+# Screenshot artifacts
+screenshots/
+*.png.tmp
+
+# Video artifacts
+videos/*.tmp
+
+# Compiled scripts
+scripts/**/*.pyc
+
+# Kvantum themes cache
+.kvantum/
+
+# Local wallpaper database
+wallpaper-cache.json
+
+# User's personal wallpapers (optional - uncomment if needed)
+# ~/Pictures/Wallpapers/
+
+# Lock files
+*.lock
+
+# Core dumps
+core
+core.*
+
+# Quickshell specific
+.quickshell/
+
+# Git conflict markers
+*.orig
+*.rej
+
+# Patches
+*.patch
+*.diff
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Credentials (just in case)
+*credentials*
+*secret*
+*apikey*
+*.key
+*.pem
