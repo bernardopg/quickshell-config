@@ -15,13 +15,24 @@ import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
 import qs.modules.common.functions as CF
+import "modules/settings" as Settings
 
 ApplicationWindow {
     id: root
+    flags: Qt.Window
     property string firstRunFilePath: CF.FileUtils.trimFileProtocol(`${Directories.state}/user/first_run.txt`)
     property string firstRunFileContent: "This file is just here to confirm you've been greeted :>"
     property real contentPadding: 8
     property bool showNextTime: false
+
+    // Function to minimize window
+    function minimizeWindow() {
+        // On Wayland/Qt, showMinimized() doesn't work reliably for ApplicationWindow
+        // Use hide() which makes the window invisible but keeps it in memory
+        // Window can be shown again via Hyprland's window list or by reopening settings
+        root.hide()
+    }
+
     property var pages: [
         {
             name: Translation.tr("Quick"),
@@ -66,6 +77,8 @@ ApplicationWindow {
         }
     ]
     property int currentPage: 0
+    property string searchQuery: ""
+    property bool searchFocused: false
 
     visible: true
     onClosing: Qt.quit()
@@ -90,10 +103,14 @@ ApplicationWindow {
 
         Keys.onPressed: (event) => {
             if (event.modifiers === Qt.ControlModifier) {
-                if (event.key === Qt.Key_PageDown) {
+                if (event.key === Qt.Key_K) {
+                    searchField.forceActiveFocus()
+                    event.accepted = true;
+                }
+                else if (event.key === Qt.Key_PageDown) {
                     root.currentPage = Math.min(root.currentPage + 1, root.pages.length - 1)
                     event.accepted = true;
-                } 
+                }
                 else if (event.key === Qt.Key_PageUp) {
                     root.currentPage = Math.max(root.currentPage - 1, 0)
                     event.accepted = true;
@@ -114,6 +131,29 @@ ApplicationWindow {
             Layout.fillWidth: true
             Layout.fillHeight: false
             implicitHeight: Math.max(titleText.implicitHeight, windowControlsRow.implicitHeight)
+
+            // Enable window dragging by clicking on titlebar
+            DragHandler {
+                target: null
+                onActiveChanged: {
+                    if (active) {
+                        root.startSystemMove()
+                    }
+                }
+            }
+
+            // Double-click to maximize/restore
+            TapHandler {
+                acceptedButtons: Qt.LeftButton
+                onDoubleTapped: {
+                    if (root.visibility === Window.Maximized) {
+                        root.showNormal()
+                    } else {
+                        root.showMaximized()
+                    }
+                }
+            }
+
             StyledText {
                 id: titleText
                 anchors {
@@ -130,20 +170,161 @@ ApplicationWindow {
                     variableAxes: Appearance.font.variableAxes.title
                 }
             }
+
+            // Search bar
+            Rectangle {
+                id: searchBar
+                anchors {
+                    left: titleText.right
+                    right: windowControlsRow.left
+                    verticalCenter: parent.verticalCenter
+                    leftMargin: 24
+                    rightMargin: 16
+                }
+                visible: root.width > 600
+                height: 36
+                radius: Appearance.rounding.full
+                color: CF.ColorUtils.transparentize(Appearance.m3colors.m3surfaceContainerHighest, 0.5)
+                border.width: searchField.activeFocus ? 2 : 0
+                border.color: Appearance.m3colors.m3primary
+
+                Behavior on border.width {
+                    NumberAnimation {
+                        duration: 150
+                        easing.type: Appearance.animation.elementMove.type
+                    }
+                }
+
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.leftMargin: 12
+                    anchors.rightMargin: 8
+                    spacing: 8
+
+                    MaterialSymbol {
+                        text: "search"
+                        iconSize: 20
+                        color: searchField.activeFocus ? Appearance.m3colors.m3primary : Appearance.m3colors.m3onSurfaceVariant
+                        Behavior on color {
+                            ColorAnimation {
+                                duration: 150
+                            }
+                        }
+                    }
+
+                    TextField {
+                        id: searchField
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        placeholderText: Translation.tr("Search settings...") + " (Ctrl+K)"
+                        placeholderTextColor: Appearance.m3colors.m3onSurfaceVariant
+                        color: Appearance.m3colors.m3onSurface
+                        font {
+                            family: Appearance.font.family.main
+                            pixelSize: Appearance.font.pixelSize.medium
+                        }
+                        background: Item {}
+                        verticalAlignment: TextInput.AlignVCenter
+                        selectByMouse: true
+
+                        onTextChanged: {
+                            root.searchQuery = text.toLowerCase()
+                        }
+
+                        onActiveFocusChanged: {
+                            root.searchFocused = activeFocus
+                        }
+
+                        Keys.onEscapePressed: {
+                            text = ""
+                            focus = false
+                        }
+                    }
+
+                    RippleButton {
+                        visible: searchField.text.length > 0
+                        buttonRadius: Appearance.rounding.full
+                        implicitWidth: 24
+                        implicitHeight: 24
+                        colBackground: "transparent"
+                        colBackgroundHover: CF.ColorUtils.transparentize(Appearance.m3colors.m3onSurface, 0.08)
+                        onClicked: {
+                            searchField.text = ""
+                        }
+                        contentItem: MaterialSymbol {
+                            anchors.centerIn: parent
+                            text: "close"
+                            iconSize: 18
+                            color: Appearance.m3colors.m3onSurfaceVariant
+                        }
+                        StyledToolTip {
+                            text: Translation.tr("Clear search")
+                        }
+                    }
+                }
+            }
+
             RowLayout { // Window controls row
                 id: windowControlsRow
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.right
+                spacing: 4
+
+                RippleButton {
+                    buttonRadius: Appearance.rounding.full
+                    implicitWidth: 35
+                    implicitHeight: 35
+                    onClicked: () => {
+                        root.minimizeWindow()
+                    }
+                    contentItem: MaterialSymbol {
+                        anchors.centerIn: parent
+                        horizontalAlignment: Text.AlignHCenter
+                        text: "minimize"
+                        iconSize: 20
+                    }
+                    StyledToolTip {
+                        text: Translation.tr("Minimize")
+                    }
+                }
+
+                RippleButton {
+                    buttonRadius: Appearance.rounding.full
+                    implicitWidth: 35
+                    implicitHeight: 35
+                    onClicked: () => {
+                        if (root.visibility === Window.Maximized) {
+                            root.showNormal()
+                        } else {
+                            root.showMaximized()
+                        }
+                    }
+                    contentItem: MaterialSymbol {
+                        anchors.centerIn: parent
+                        horizontalAlignment: Text.AlignHCenter
+                        text: root.visibility === Window.Maximized ? "fullscreen_exit" : "fullscreen"
+                        iconSize: 20
+                    }
+                    StyledToolTip {
+                        text: root.visibility === Window.Maximized ? Translation.tr("Restore") : Translation.tr("Maximize")
+                    }
+                }
+
                 RippleButton {
                     buttonRadius: Appearance.rounding.full
                     implicitWidth: 35
                     implicitHeight: 35
                     onClicked: root.close()
+                    colBackground: CF.ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
+                    colBackgroundHover: Qt.rgba(0.8, 0.2, 0.2, 0.15)
                     contentItem: MaterialSymbol {
                         anchors.centerIn: parent
                         horizontalAlignment: Text.AlignHCenter
                         text: "close"
                         iconSize: 20
+                    }
+                    StyledToolTip {
+                        text: Translation.tr("Close")
                     }
                 }
             }
@@ -170,7 +351,7 @@ ApplicationWindow {
                     }
                     spacing: 4
                     expanded: root.width > 750
-                    
+
                     NavigationRailExpandButton {
                         focus: root.visible
                     }
@@ -242,15 +423,43 @@ ApplicationWindow {
                     opacity: 1.0
 
                     active: Config.ready
+
                     Component.onCompleted: {
                         source = root.pages[0].component
+                    }
+
+                    // Search results component
+                    Component {
+                        id: searchResultsComponent
+                        Settings.SearchResults {
+                            searchQuery: root.searchQuery
+                            pages: root.pages
+                            onResultClicked: (pageIndex) => {
+                                root.currentPage = pageIndex
+                                searchField.text = ""
+                                searchField.focus = false
+                            }
+                        }
                     }
 
                     Connections {
                         target: root
                         function onCurrentPageChanged() {
-                            switchAnim.complete();
-                            switchAnim.start();
+                            // Only switch pages when not searching
+                            if (root.searchQuery.length < 2) {
+                                switchAnim.complete();
+                                switchAnim.start();
+                            }
+                        }
+                        function onSearchQueryChanged() {
+                            if (root.searchQuery.length >= 2) {
+                                // Show search results
+                                pageLoader.sourceComponent = searchResultsComponent
+                            } else {
+                                // Return to current page
+                                pageLoader.sourceComponent = null
+                                pageLoader.source = root.pages[root.currentPage].component
+                            }
                         }
                     }
 
