@@ -1,6 +1,0 @@
-{
-  // Configuração do Qt QML Language Server
-  "qml.languageServer.path": "/usr/bin/qmlls6",
-  // Desabilitar a extensão Qt for Python neste workspace
-  "qt-for-python.enable": false
-}
