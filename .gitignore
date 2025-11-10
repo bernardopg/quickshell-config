@@ -1,13 +1,40 @@
+# ============================================
 # User Configuration & Runtime State
+# ============================================
 # These files contain user-specific settings and should not be tracked
-~/.config/illogical-impulse/config.json
-~/.local/state/quickshell/states.json
+config.json
+states.json
+*.local.json
 
+# ============================================
 # Translation Backups
+# ============================================
 # Auto-generated backup files from translation tools
 translations/*.bak
+translations/*.backup
+translations/tools/*.bak
 
+# ============================================
+# Credentials & Sensitive Data
+# ============================================
+# Prevent accidental commit of sensitive information
+*credentials*
+*secret*
+*apikey*
+*api_key*
+*api-key*
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+.env
+.env.*
+!.env.example
+
+# ============================================
 # Python
+# ============================================
 __pycache__/
 *.py[cod]
 *$py.class
@@ -25,6 +52,8 @@ parts/
 sdist/
 var/
 wheels/
+pip-wheel-metadata/
+share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
@@ -32,8 +61,11 @@ MANIFEST
 venv/
 ENV/
 env/
+.venv
 
+# ============================================
 # Qt/QML
+# ============================================
 *.qmlc
 *.jsc
 .qmake.stash
@@ -42,26 +74,36 @@ env/
 qrc_*.cpp
 moc_*.cpp
 ui_*.h
+*.autosave
 
+# ============================================
 # IDE / Editor
+# ============================================
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
-.DS_Store
 .project
 .settings/
 .classpath
 *.kate-swp
+.vscode-server/
+*.code-workspace
 
+# ============================================
 # Logs
+# ============================================
 *.log
 *.qslog
 log.txt
 debug.log
+error.log
+*.log.*
 
+# ============================================
 # Temporary Files
+# ============================================
 *.tmp
 *.temp
 *.cache
@@ -69,68 +111,75 @@ debug.log
 *.bak
 *~
 .*.swp
+.*.swo
+\#*\#
+.#*
 
+# ============================================
 # System Files
+# ============================================
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 Desktop.ini
+$RECYCLE.BIN/
 
-# Environment Variables
-.env.local
-.env.*.local
-*.env
-
-# Generated Files
-*.autosave
-*.orig
-
-# Compiled QML
-*.qmlc
-*.jsc
-
+# ============================================
 # Node.js (if any tools use it)
+# ============================================
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 package-lock.json
 yarn.lock
+.npm
+.eslintcache
 
-# Backup files from text editors
-*~
-*.swp
-*.swo
-\#*\#
-.#*
-
-# Personal notes (optional)
+# ============================================
+# Personal Notes
+# ============================================
 NOTES.md
 PERSONAL.md
 SCRATCH.md
+TODO.local.md
+PRIVATE.md
 
-# Test artifacts
+# ============================================
+# Test & Coverage
+# ============================================
 test-results/
 coverage/
 .coverage
+.pytest_cache/
+.nyc_output/
 
-# Thumbnails
+# ============================================
+# Media Artifacts
+# ============================================
 .thumbnails/
 thumbnails/
+screenshots/
+*.png.tmp
+videos/*.tmp
 
-# Cliphist database (if stored locally)
+# ============================================
+# Project Specific
+# ============================================
+# Cliphist database
 cliphist.db
+*.db
+*.sqlite
+*.sqlite3
 
-# AI model caches (if downloaded locally)
+# AI model caches
 models/
 *.gguf
 *.bin
-
-# Screenshot artifacts
-screenshots/
-*.png.tmp
-
-# Video artifacts
-videos/*.tmp
 
 # Compiled scripts
 scripts/**/*.pyc
@@ -141,11 +190,9 @@ scripts/**/*.pyc
 # Local wallpaper database
 wallpaper-cache.json
 
-# User's personal wallpapers (optional - uncomment if needed)
-# ~/Pictures/Wallpapers/
-
 # Lock files
 *.lock
+!package-lock.json
 
 # Core dumps
 core
@@ -153,24 +200,33 @@ core.*
 
 # Quickshell specific
 .quickshell/
+*.qslog
 
-# Git conflict markers
+# ============================================
+# Git Artifacts
+# ============================================
 *.orig
 *.rej
-
-# Patches
 *.patch
 *.diff
 
+# ============================================
 # Archives
+# ============================================
 *.zip
+*.tar
 *.tar.gz
+*.tgz
 *.rar
 *.7z
+*.gz
+*.bz2
+*.xz
 
-# Credentials (just in case)
-*credentials*
-*secret*
-*apikey*
-*.key
-*.pem
+# ============================================
+# Documentation & Meta (do not commit)
+# ============================================
+CLAUDE.md
+.github/
+.claude/
+copilot-instructions.md
