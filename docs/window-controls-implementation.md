@@ -461,16 +461,19 @@ hyprctl clients | grep "illogical-impulse Settings"
 ### 1. Minimizar no Wayland (RESOLVIDO)
 
 **Problema Original:**
+
 - `showMinimized()` era chamado mas a janela retornava imediatamente ao estado normal
 - Visibilidade mudava de 2 → 3 → 2 em milissegundos
 - Comportamento inconsistente e frustrante para o usuário
 
 **Investigação:**
+
 - Adicionados logs extensivos para debug
 - Descoberto que é uma limitação arquitetural do Qt ApplicationWindow em Wayland
 - ApplicationWindow não tem autoridade para se minimizar sozinha no protocolo Wayland
 
 **Solução Implementada:**
+
 ```qml
 function minimizeWindow(): void {
     hide() // Oculta a janela em vez de minimizar
@@ -478,6 +481,7 @@ function minimizeWindow(): void {
 ```
 
 **Resultado:**
+
 - ✅ Janela desaparece ao clicar em minimizar
 - ✅ Permanece na memória (não fecha)
 - ✅ Pode ser reaberta pela lista de janelas do Hyprland
@@ -486,14 +490,17 @@ function minimizeWindow(): void {
 ### 2. Duplo Clique Necessário para Maximizar (RESOLVIDO)
 
 **Problema Original:**
+
 - Primeiro clique não tinha efeito
 - Necessário clicar duas vezes no botão maximizar
 
 **Causa:**
+
 - Uso incorreto da propriedade `visibility` para alternar estados
 - Binding reativo conflitante
 
 **Solução Implementada:**
+
 ```qml
 onClicked: {
     if (root.visibility === Window.Maximized) {
@@ -505,6 +512,7 @@ onClicked: {
 ```
 
 **Resultado:**
+
 - ✅ Primeiro clique funciona imediatamente
 - ✅ Transição suave entre estados
 - ✅ Usa métodos nativos Qt
@@ -512,10 +520,12 @@ onClicked: {
 ### 3. Impossibilidade de Arrastar Janela (RESOLVIDO)
 
 **Problema Original:**
+
 - Clicar e arrastar na barra de título não movia a janela
 - Falta de integração com o compositor Wayland
 
 **Solução Implementada:**
+
 ```qml
 DragHandler {
     target: null
@@ -528,6 +538,7 @@ DragHandler {
 ```
 
 **Resultado:**
+
 - ✅ Janela pode ser arrastada clicando na barra de título
 - ✅ Integração nativa com Wayland via `startSystemMove()`
 - ✅ Funciona em qualquer área da barra de título
@@ -535,13 +546,16 @@ DragHandler {
 ### 4. Falta de Suporte a Tiling (RESOLVIDO)
 
 **Problema Original:**
+
 - Janela não participava das regras de tiling do Hyprland
 - Sempre aparecia como floating
 
 **Causa:**
+
 - Falta do flag `Qt.Window` para integração com window manager
 
 **Solução Implementada:**
+
 ```qml
 ApplicationWindow {
     flags: Qt.Window
@@ -549,6 +563,7 @@ ApplicationWindow {
 ```
 
 **Resultado:**
+
 - ✅ Janela participa de layouts dinâmicos do Hyprland
 - ✅ Compatível com regras de floating/tiling
 - ✅ Comportamento consistente com outras aplicações Qt
